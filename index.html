@@ -1,87 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#000000">
-<title>Offline Compendium</title>
+<title>Xenoth Offline Compendium</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header role="banner" id="topHeader">
-  <button id="aboutButton">About</button>
-  <h1>Offline Compendium</h1>
-  <div class="header-actions">
-    <span id="storageStatus">Checking local storage…</span>
-    <label class="button">Install / Replace ZIP<input id="zipInput" type="file" accept=".zip,application/zip" hidden></label>
-    <button id="removeCompendium" hidden>Remove</button>
-    <button class="top" onclick="window.scrollTo(0,0)">Top</button>
-  </div>
+<header id="app_header">
+  <div><b>Xenoth Offline Compendium</b><small id="statusText">Load the Xenoth-edits ZIP to begin.</small></div>
+  <div class="install_controls"><span id="storageStatus">Checking local storage…</span><label class="button">Install / Replace ZIP<input id="zipInput" type="file" accept=".zip,application/zip" hidden></label><button id="removeCompendium" hidden>Remove</button></div>
 </header>
-
-<main id="app">
-  <section id="compendiumView" class="view active">
-    <div id="act_list_pnl_term" role="search">
-      <input type="search" id="searchInput" placeholder="Search compendium" disabled>
+<nav id="app_tabs">
+  <button class="app_tab active" data-view="compendium">Compendium</button>
+  <button class="app_tab" data-view="character">Character</button>
+  <button class="app_tab" data-view="library">Characters</button>
+</nav>
+<main>
+<section id="compendiumView" class="view active">
+  <section id="action_list">
+    <div id="act_list_pnl_term">
+      <input id="act_list_txt_search" type="search" placeholder="Search the compendium" disabled>
+      <table id="act_list_tbl_search"><tr><td><button id="act_list_btn_search_name" disabled>Search Name</button><button id="act_list_btn_search_full" disabled>Search Body</button></td><td><button id="clearSearch">×</button></td></tr></table>
     </div>
-    <table id="act_list_tbl_search"><tr><td>
-      <button id="searchName" disabled>Search Name</button><button id="searchFull" disabled>Search Body</button>
-    </td></tr></table>
-
-    <div id="categoryTabs" role="tablist"></div>
-    <div id="act_list_lbl_caption"><span id="resultCount">0 entries</span><span id="statusText"> Install the Xenoth ZIP to begin.</span></div>
-
+    <div id="act_list_pnl_category"></div>
+    <div id="act_list_lbl_caption"><b id="act_list_lbl_showing">Load a ZIP to begin.</b><span id="catalogSummary"></span></div>
     <div id="act_list_pnl_split">
-      <section id="listPane">
-        <div id="resultTableWrap" class="empty-state">Load a ZIP, then search.</div>
-      </section>
-
-      <aside id="previewPane" aria-label="Preview">
-        <div id="detail" class="preview_hint">Hover or select a result to preview the complete entry here.</div>
-      </aside>
-
-      <aside id="characterPane" aria-label="Character Builder">
-        <div class="char_hdr"><b>Character</b><span>Build, save, import, export</span></div>
-        <label>Name<input id="characterName" type="text" value="New Character"></label>
-        <label>Level<input id="level" type="number" min="1" max="30" value="1"></label>
-        <div class="char_btn_row">
-          <button id="newCharacter">New</button><button id="saveCharacter">Save</button>
-        </div>
-        <div class="char_btn_row">
-          <button id="exportCharacter">Download JSON</button>
-          <label class="button">Import JSON<input id="importCharacter" type="file" accept="application/json,.json" hidden></label>
-        </div>
-        <div class="char_btn_row"><button id="openSheet">Full Sheet</button><button id="printCharacter">Print / PDF</button></div>
-        <hr>
-        <div id="characterSummary"></div>
-        <div id="characterEntries"></div>
-      </aside>
+      <div id="act_list_pnl_list">
+        <table id="act_list_table"><thead id="resultHead"></thead><tbody id="resultBody"></tbody></table>
+      </div>
+      <article id="act_list_pnl_preview"><p class="preview_hint">Select an entry to preview it.</p></article>
     </div>
   </section>
-
-  <section id="characterView" class="view">
-    <header class="sheet-nav no-print"><button id="backToCompendium">← Compendium</button><button id="shortRest">Short Rest</button><button id="extendedRest">Extended Rest</button><button id="spendSurge">Spend Surge</button><button id="saveCharacterSheet">Save</button><button id="printCharacterSheet">Print / PDF</button></header>
-    <article id="characterSheet">
-      <div class="sheet-title"><div><input id="sheetNameInput" class="sheet-name" value="New Character"><div id="sheetSummary">Level 1 Adventurer</div></div><label>Level<input id="sheetLevel" type="number" min="1" max="30" value="1"></label></div>
-      <div class="identity-grid">
-        <label>Race<input id="race"></label><label>Class<input id="className"></label><label>Paragon Path<input id="paragonPath"></label><label>Epic Destiny<input id="epicDestiny"></label>
-      </div>
-      <h2>Combat Statistics</h2>
-      <div class="stat-grid">
-        <label>HP Max<input id="hpMax" type="number" value="20"></label><label>HP Current<input id="hpCurrent" type="number" value="20"></label><label>Surges Max<input id="surgesMax" type="number" value="8"></label><label>Surges Left<input id="surgesCurrent" type="number" value="8"></label><label>AC<input id="ac" type="number" value="10"></label><label>Fortitude<input id="fort" type="number" value="10"></label><label>Reflex<input id="ref" type="number" value="10"></label><label>Will<input id="will" type="number" value="10"></label><label>Speed<input id="speed" type="number" value="6"></label><label>Initiative<input id="initiative" type="number" value="0"></label>
-      </div>
-      <h2>Ability Scores</h2><div id="abilities" class="ability-grid"></div>
-      <div class="notes-grid"><label>Skills<textarea id="skills" rows="8"></textarea></label><label>Notes<textarea id="notes" rows="8"></textarea></label></div>
-      <h2>Complete Compendium Entries</h2>
-      <div id="fullCharacterEntries"></div>
-    </article>
+</section>
+<section id="characterView" class="view">
+  <div class="character_toolbar no_print"><input id="characterName" placeholder="Character name"><button id="newCharacter">New</button><button id="saveCharacter">Save</button><button id="exportCharacter">Export JSON</button><label class="button">Import JSON<input id="importCharacter" type="file" accept=".json,application/json" hidden></label><button id="printCharacter">Print / PDF</button></div>
+  <section id="characterSheet" class="character_sheet">
+    <header class="character_title"><div><h1 id="sheetName">Unnamed Hero</h1><p id="sheetSummary">Level 1 Adventurer</p></div><label>Level<input id="level" type="number" min="1" max="30" value="1"></label></header>
+    <div class="identity_grid"><label>Race<input id="race"></label><label>Class<input id="className"></label><label>Paragon Path<input id="paragonPath"></label><label>Epic Destiny<input id="epicDestiny"></label></div>
+    <h2>Combat</h2><div class="stat_grid"><label>HP Max<input id="hpMax" type="number" value="20"></label><label>HP Current<input id="hpCurrent" type="number" value="20"></label><label>Surges Max<input id="surgesMax" type="number" value="8"></label><label>Surges Left<input id="surgesCurrent" type="number" value="8"></label><label>AC<input id="ac" type="number" value="10"></label><label>Fort<input id="fort" type="number" value="10"></label><label>Ref<input id="ref" type="number" value="10"></label><label>Will<input id="will" type="number" value="10"></label><label>Speed<input id="speed" type="number" value="6"></label><label>Initiative<input id="initiative" type="number" value="0"></label></div>
+    <div class="rest_row no_print"><button id="shortRest">Short Rest</button><button id="extendedRest">Extended Rest</button><button id="spendSurge">Spend Surge</button></div>
+    <h2>Ability Scores</h2><div id="abilities" class="ability_grid"></div>
+    <h2>Skills & Notes</h2><div class="notes_grid"><textarea id="skills" rows="8" placeholder="Skills, passive scores, senses…"></textarea><textarea id="notes" rows="8" placeholder="Conditions, rituals, campaign notes…"></textarea></div>
+    <h2>Compendium Entries</h2><div id="characterEntries"></div>
   </section>
-
-  <section id="libraryView" class="view"><header class="sheet-nav"><button id="libraryBack">← Compendium</button></header><h1>Saved Characters</h1><div id="characterLibrary"></div></section>
+</section>
+<section id="libraryView" class="view"><section class="library_panel"><h1>Saved Characters <span id="savedCount">0</span></h1><div id="characterLibrary">No saved characters yet.</div></section></section>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="app.js"></script>
 <script src="storage.js"></script>
 </body>
