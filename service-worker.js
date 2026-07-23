@@ -1,4 +1,4 @@
-const CACHE='xenoth-compendium-v3';
+const CACHE='xenoth-compendium-v4';
 const APP=['./','index.html','styles.css','app.js','storage.js','manifest.webmanifest'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
