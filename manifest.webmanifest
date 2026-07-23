@@ -1,0 +1,10 @@
+{
+  "name": "Xenoth 4e Compendium",
+  "short_name": "Xenoth 4e",
+  "description": "Local-first D&D 4e compendium and character sheet.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef1f5",
+  "theme_color": "#111827",
+  "icons": []
+}
