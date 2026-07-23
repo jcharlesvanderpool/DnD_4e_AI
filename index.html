@@ -3,40 +3,127 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#000000">
   <title>Xenoth 4e Compendium</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="original-theme.css">
 </head>
 <body>
   <header class="topbar">
-    <div><h1>Xenoth 4e Compendium</h1><p id="statusText">Load the Xenoth-edits ZIP to begin.</p></div>
-    <label class="button primary">Load ZIP<input id="zipInput" type="file" accept=".zip,application/zip" hidden></label>
+    <div>
+      <h1>Xenoth 4e Compendium</h1>
+      <p id="statusText">Load the Xenoth-edits ZIP to begin.</p>
+    </div>
+    <div class="topbar-actions">
+      <span id="storageStatus" class="storage-status">Checking local storage…</span>
+      <label class="button primary">Install / Replace ZIP<input id="zipInput" type="file" accept=".zip,application/zip" hidden></label>
+      <button id="removeCompendium" hidden>Remove</button>
+    </div>
   </header>
+
   <nav class="tabs" aria-label="Main navigation">
-    <button class="tab active" data-view="compendium">Compendium</button><button class="tab" data-view="character">Character</button><button class="tab" data-view="library">Characters</button>
+    <button class="tab active" data-view="compendium">Compendium</button>
+    <button class="tab" data-view="character">Character</button>
+    <button class="tab" data-view="library">Characters</button>
   </nav>
+
   <main>
     <section id="compendiumView" class="view active">
-      <div class="panel search-panel"><div class="search-row"><input id="searchInput" type="search" placeholder="Search powers, feats, classes, items…" disabled><select id="categoryFilter" disabled><option value="all">All categories</option></select><button id="searchButton" disabled>Search</button></div><div id="catalogSummary" class="muted"></div></div>
-      <div class="split-layout"><section class="panel results-panel"><div class="panel-heading"><h2>Results</h2><span id="resultCount" class="badge">0</span></div><div id="results" class="results empty-state">Load a ZIP, then search.</div></section><article class="panel detail-panel"><div id="detail" class="empty-state">Select an entry to view its full text.</div></article></div>
+      <div class="panel search-panel">
+        <div class="search-row">
+          <input id="searchInput" type="search" placeholder="Search powers, feats, classes, items…" disabled>
+          <select id="categoryFilter" disabled><option value="all">All categories</option></select>
+          <button id="searchButton" disabled>Search</button>
+        </div>
+        <div id="catalogSummary" class="muted catalog-summary"></div>
+      </div>
+
+      <div class="split-layout">
+        <section class="panel results-panel">
+          <div class="panel-heading"><h2>Results</h2><span id="resultCount" class="badge">0</span></div>
+          <div id="results" class="results empty-state">Load a ZIP, then search.</div>
+        </section>
+        <article class="panel detail-panel">
+          <div id="detail" class="empty-state">Select an entry to view its full text.</div>
+        </article>
+      </div>
     </section>
+
     <section id="characterView" class="view">
-      <div class="character-toolbar panel no-print"><input id="characterName" placeholder="Character name"><button id="newCharacter">New</button><button id="saveCharacter" class="primary">Save</button><button id="exportCharacter">Export JSON</button><label class="button">Import JSON<input id="importCharacter" type="file" accept="application/json,.json" hidden></label><button id="printCharacter">Print / PDF</button></div>
+      <div class="character-toolbar panel no-print">
+        <input id="characterName" placeholder="Character name">
+        <button id="newCharacter">New</button>
+        <button id="saveCharacter" class="primary">Save</button>
+        <button id="exportCharacter">Export JSON</button>
+        <label class="button">Import JSON<input id="importCharacter" type="file" accept="application/json,.json" hidden></label>
+        <button id="printCharacter">Print / PDF</button>
+      </div>
+
       <section id="characterSheet" class="character-sheet panel">
-        <div class="sheet-header"><div><h2 id="sheetName">Unnamed Hero</h2><p id="sheetSummary">Level 1 Adventurer</p></div><div class="level-box"><label>Level<input id="level" type="number" min="1" max="30" value="1"></label></div></div>
-        <div class="identity-grid editable-grid"><label>Race<input id="race" placeholder="Race"></label><label>Class<input id="className" placeholder="Class"></label><label>Paragon Path<input id="paragonPath" placeholder="Paragon path"></label><label>Epic Destiny<input id="epicDestiny" placeholder="Epic destiny"></label></div>
-        <h3>Combat</h3><div class="stat-grid"><label>HP Max<input id="hpMax" type="number" value="20"></label><label>HP Current<input id="hpCurrent" type="number" value="20"></label><label>Surges Max<input id="surgesMax" type="number" value="8"></label><label>Surges Left<input id="surgesCurrent" type="number" value="8"></label><label>AC<input id="ac" type="number" value="10"></label><label>Fort<input id="fort" type="number" value="10"></label><label>Ref<input id="ref" type="number" value="10"></label><label>Will<input id="will" type="number" value="10"></label><label>Speed<input id="speed" type="number" value="6"></label><label>Initiative<input id="initiative" type="number" value="0"></label></div>
-        <div class="rest-row no-print"><button id="shortRest">Short Rest</button><button id="extendedRest">Extended Rest</button><button id="spendSurge">Spend Surge</button></div>
-        <h3>Ability Scores</h3><div id="abilities" class="ability-grid"></div>
-        <h3>Skills & Notes</h3><div class="two-col"><textarea id="skills" rows="8" placeholder="Skills, passive scores, senses…"></textarea><textarea id="notes" rows="8" placeholder="Conditions, rituals, campaign notes…"></textarea></div>
-        <div class="section-heading"><h3>Compendium Entries</h3><span class="muted no-print">Add entries from search results.</span></div><div id="characterEntries"></div>
+        <div class="sheet-header">
+          <div><h2 id="sheetName">Unnamed Hero</h2><p id="sheetSummary">Level 1 Adventurer</p></div>
+          <div class="level-box"><label>Level<input id="level" type="number" min="1" max="30" value="1"></label></div>
+        </div>
+
+        <div class="identity-grid editable-grid">
+          <label>Race<input id="race" placeholder="Race"></label>
+          <label>Class<input id="className" placeholder="Class"></label>
+          <label>Paragon Path<input id="paragonPath" placeholder="Paragon path"></label>
+          <label>Epic Destiny<input id="epicDestiny" placeholder="Epic destiny"></label>
+        </div>
+
+        <h3>Combat</h3>
+        <div class="stat-grid">
+          <label>HP Max<input id="hpMax" type="number" value="20"></label>
+          <label>HP Current<input id="hpCurrent" type="number" value="20"></label>
+          <label>Surges Max<input id="surgesMax" type="number" value="8"></label>
+          <label>Surges Left<input id="surgesCurrent" type="number" value="8"></label>
+          <label>AC<input id="ac" type="number" value="10"></label>
+          <label>Fort<input id="fort" type="number" value="10"></label>
+          <label>Ref<input id="ref" type="number" value="10"></label>
+          <label>Will<input id="will" type="number" value="10"></label>
+          <label>Speed<input id="speed" type="number" value="6"></label>
+          <label>Initiative<input id="initiative" type="number" value="0"></label>
+        </div>
+
+        <div class="rest-row no-print">
+          <button id="shortRest">Short Rest</button>
+          <button id="extendedRest">Extended Rest</button>
+          <button id="spendSurge">Spend Surge</button>
+        </div>
+
+        <h3>Ability Scores</h3>
+        <div id="abilities" class="ability-grid"></div>
+
+        <h3>Skills & Notes</h3>
+        <div class="two-col">
+          <textarea id="skills" rows="8" placeholder="Skills, passive scores, senses…"></textarea>
+          <textarea id="notes" rows="8" placeholder="Conditions, rituals, campaign notes…"></textarea>
+        </div>
+
+        <div class="section-heading"><h3>Compendium Entries</h3><span class="muted no-print">Add entries from search results.</span></div>
+        <div id="characterEntries"></div>
       </section>
     </section>
-    <section id="libraryView" class="view"><div class="panel"><div class="panel-heading"><h2>Saved Characters</h2><span id="savedCount" class="badge">0</span></div><div id="characterLibrary" class="cards empty-state">No saved characters yet.</div></div></section>
+
+    <section id="libraryView" class="view">
+      <div class="panel">
+        <div class="panel-heading"><h2>Saved Characters</h2><span id="savedCount" class="badge">0</span></div>
+        <div id="characterLibrary" class="cards empty-state">No saved characters yet.</div>
+      </div>
+    </section>
   </main>
-  <template id="resultTemplate"><button class="result-card"><span class="result-main"><strong></strong><small></small></span><span class="result-actions"><span class="category-pill"></span><span class="add-label">＋</span></span></button></template>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <template id="resultTemplate">
+    <button class="result-card">
+      <span class="result-main"><strong></strong><small></small></span>
+      <span class="result-actions"><span class="category-pill"></span><span class="add-label">＋</span></span>
+    </button>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha256-rMfkFFWoB2W1/Zx+4bgHim0WC7vKRVrq6FTeZclH1Z4=" crossorigin="anonymous"></script>
   <script src="app.js"></script>
+  <script src="storage.js"></script>
 </body>
 </html>
